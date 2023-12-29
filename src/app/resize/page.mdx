@@ -1,202 +1,167 @@
 export const metadata = {
-  title: 'Conversations',
+  title: 'Resize',
   description:
     'On this page, we’ll dive into the different conversation endpoints you can use to manage conversations programmatically.',
 }
 
-# Conversations
+# Resize
 
 Conversations are an essential part of Protocol — they are the containers for the messages between you, your contacts, and groups. On this page, we’ll dive into the different conversation endpoints you can use to manage conversations programmatically. We'll look at how to query, create, update, and delete conversations. {{ className: 'lead' }}
 
-## The conversation model
+## Crops Class
 
-The conversation model contains all the information about the conversations between you and your contacts. In addition, conversations can also be group-based with more than one contact, they can have a pinned message, and they can be muted.
+Represents the crop and resize information of a video, including original dimensions,
+crop dimensions, and segments of the video that were cropped. Segments provide the x and
+y position of the video to start and crop from, as well as the speakers present in the
+segment, and the start and end time of the segment.
 
 ### Properties
 
 <Properties>
-  <Property name="id" type="string">
-    Unique identifier for the conversation.
-  </Property>
-  <Property name="contact_id" type="string">
-    Unique identifier for the other contact in the conversation.
-  </Property>
-  <Property name="group_id" type="string">
-    Unique identifier for the group that the conversation belongs to.
-  </Property>
-  <Property name="pinned_message_id" type="string">
-    Unique identifier for the pinned message.
-  </Property>
-  <Property name="is_pinned" type="boolean">
-    Whether or not the conversation has been pinned.
-  </Property>
-  <Property name="is_muted" type="boolean">
-    Whether or not the conversation has been muted.
-  </Property>
-  <Property name="last_active_at" type="timestamp">
-    Timestamp of when the conversation was last active.
-  </Property>
-  <Property name="last_opened_at" type="timestamp">
-    Timestamp of when the conversation was last opened by the authenticated
-    user.
-  </Property>
-  <Property name="created_at" type="timestamp">
-    Timestamp of when the conversation was created.
-  </Property>
-  <Property name="archived_at" type="timestamp">
-    Timestamp of when the conversation was archived.
-  </Property>
+    <Property name="crop_width" type="int">
+        The width of the resized video based on the number of pixels.
+    </Property>
+    <Property name="crop_height" type="int">
+        The height of the resized video based on the number of pixels.
+    </Property>
+    <Property name="original_width" type="int">
+        The width of the original video based on the number of pixels.
+    </Property>
+    <Property name="original_height" type="int">
+        The height of the original video based on the number of pixels.
+    </Property>
+    <Property name="segments" type="List[Segment]">
+        The list of Segments providing the crop coordinates and times.
+    </Property>
+</Properties>
+
+### Methods
+
+<Properties>
+    <Property name="add_segment(segment: Segment)" type="None">
+        Add a new segment to the crops.
+    </Property>
+    <Property name="remove_segment(index: int)" type="Segment">
+        Remove a segment from the crops by index.
+    </Property>
+    <Property name="to_dict()" type="dict">
+        Returns a dictionary representation of the Crops instance.
+    </Property>
 </Properties>
 
 ---
 
-## List all conversations {{ tag: 'GET', label: '/v1/conversations' }}
+## Segment Class
 
-<Row>
-  <Col>
+Represents a segment of a video that was cropped, including the speakers, start & end
+time, and the crop coordinates.
 
-    This endpoint allows you to retrieve a paginated list of all your conversations. By default, a maximum of ten conversations are shown per page.
+### Properties
 
-    ### Optional attributes
+<Properties>
+    <Property name="x" type="int">
+        The x coordinate of the top left corner of the crop from the original video.
+    </Property>
+    <Property name="y" type="int">
+        The y coordinate of the top left corner of the crop from the original video.
+    </Property>
+    <Property name="start_time" type="float">
+        The start time of the segment in seconds.
+    </Property>
+    <Property name="end_time" type="float">
+        The end time of the segment in seconds.
+    </Property>
+    <Property name="speakers" type="List[int]">
+        Returns a list of speaker identifiers in this segment. Each identifier 
+        uniquely represents a speaker in the entire video.
+    </Property>
+</Properties>
 
-    <Properties>
-      <Property name="limit" type="integer">
-        Limit the number of conversations returned.
-      </Property>
-      <Property name="muted" type="boolean">
-        Only show conversations that are muted when set to `true`.
-      </Property>
-      <Property name="archived" type="boolean">
-        Only show conversations that are archived when set to `true`.
-      </Property>
-      <Property name="pinned" type="boolean">
-        Only show conversations that are pinned when set to `true`.
-      </Property>
-      <Property name="group_id" type="string">
-        Only show conversations for the specified group.
-      </Property>
-    </Properties>
+### Methods
 
-  </Col>
-  <Col sticky>
+<Properties>
+    <Property name="update_coordinates(x: int, y: int)" type="None">
+        Update the crop coordinates of the segment.
+    </Property>
+    <Property name="to_dict()" type="dict">
+        Returns a dictionary representation of the Segment properties.
+    </Property>
+</Properties>
 
-    <CodeGroup title="Request" tag="GET" label="/v1/conversations">
-
-    ```bash {{ title: 'cURL' }}
-    curl -G https://api.protocol.chat/v1/conversations \
-      -H "Authorization: Bearer {token}" \
-      -d limit=10
-    ```
-
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.conversations.list()
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.conversations.list()
-    ```
-
-    ```php
-    $client = new \Protocol\ApiClient($token);
-
-    $client->conversations->list();
-    ```
-
-    </CodeGroup>
-
-    ```json {{ title: 'Response' }}
-    {
-      "has_more": false,
-      "data": [
-        {
-          "id": "xgQQXg3hrtjh7AvZ",
-          "contact_id": "WAz8eIbvDR60rouK",
-          "group_id": null,
-          "pinned_message_id": null,
-          "is_pinned": false,
-          "is_muted": false,
-          "last_active_at": 705103200,
-          "last_opened_at": 705103200,
-          "created_at": 692233200,
-          "archived_at": null
-        },
-        {
-          "id": "hSIhXBhNe8X1d8Et"
-          // ...
-        }
-      ]
-    }
-    ```
-
-  </Col>
-</Row>
 
 ---
 
-## Create a conversation {{ tag: 'POST', label: '/v1/conversations' }}
+## Resize Function
 
 <Row>
   <Col>
 
-    This endpoint allows you to add a new conversation between you and a contact or group. A contact or group id is required to create a conversation.
+    Resizes a video to a specified aspect ratio, with default being 9:16. It involves 
+    speaker diarization, scene detection, and face detection for resizing.
 
-    ### Required attributes
+    ### Required parameters
 
     <Properties>
-      <Property name="contact_id" type="string">
-        Unique identifier for the other contact in the conversation.
-      </Property>
-      <Property name="group_id" type="string">
-        Unique identifier for the group that the conversation belongs to.
-      </Property>
+        <Property name="video_file_path" type="string">
+            Absolute path to the video file.
+        </Property>
+        <Property name="pyannote_auth_token" type="string">
+            Authentication token for Pyannote, obtained from HuggingFace.
+        </Property>
+        <Property name="aspect_ratio" type="tuple[int, int]">
+            The target aspect ratio for resizing the video (width, height).
+        </Property>
+    </Properties>
+
+    ### Optional parameters
+
+    <Properties>
+        <Property name="min_segment_duration" type="float">
+            The minimum duration in seconds for a diarized speaker segment to be considered. Default is 1.5.
+        </Property>
+        <Property name="samples_per_segment" type="int">
+            The number of samples to take per speaker segment for face detection. Default is 13.
+        </Property>
+        <Property name="face_detect_width" type="int">
+            The width in pixels to which the video will be downscaled for face detection. Default is 960.
+        </Property>
+        <Property name="face_detect_margin" type="int">
+            Margin around detected faces, used in the MTCNN face detector. Default is 20.
+        </Property>
+        <Property name="face_detect_post_process" type="bool">
+            If set to True, post-processing is applied to the face detection output to make it appear more natural. Default is False.
+        </Property>
+        <Property name="n_face_detect_batches" type="int">
+            Number of batches for processing face detection when using GPUs. Default is 8.
+        </Property>
+        <Property name="min_scene_duration" type="float">
+            Minimum duration in seconds for a scene to be considered during scene detection. Default is 0.25.
+        </Property>
+        <Property name="scene_merge_threshold" type="float">
+            Threshold in seconds for merging scene changes with speaker segments. Default is 0.25.
+        </Property>
+        <Property name="time_precision" type="int">
+            Precision (number of decimal places) for start and end times in diarization. Default is 6.
+        </Property>
+        <Property name="device" type="string">
+            The compute device ('auto', 'cpu', or 'cuda') for processing. Default is 'auto'.
+        </Property>
     </Properties>
 
   </Col>
+
   <Col sticky>
 
-    <CodeGroup title="Request" tag="POST" label="/v1/conversations">
+    ```python {{ title: 'Request' }}
+    from clipsai import resize
 
-    ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/conversations \
-      -H "Authorization: Bearer {token}" \
-      -d 'contact_id'="WAz8eIbvDR60rouK"
+    crops = resize(
+        video_file_path="video.mp4",
+        pyannote_auth_token="pyannote_token",
+        aspect_ratio=(9, 16)
+    )
     ```
 
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.conversations.create({
-      contact_id: 'WAz8eIbvDR60rouK',
-    })
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.conversations.create(contact_id="WAz8eIbvDR60rouK")
-    ```
-
-    ```php
-    $client = new \Protocol\ApiClient($token);
-
-    $client->conversations->create([
-      'contact_id' => 'WAz8eIbvDR60rouK',
-    ]);
-    ```
-
-    </CodeGroup>
 
     ```json {{ title: 'Response' }}
     {
@@ -212,196 +177,6 @@ The conversation model contains all the information about the conversations betw
       "archived_at": null
     }
     ```
-
-  </Col>
-</Row>
-
----
-
-## Retrieve a conversation {{ tag: 'GET', label: '/v1/conversations/:id' }}
-
-<Row>
-  <Col>
-
-    This endpoint allows you to retrieve a conversation by providing the conversation id. Refer to [the list](#the-conversation-model) at the top of this page to see which properties are included with conversation objects.
-
-  </Col>
-  <Col sticky>
-
-    <CodeGroup title="Request" tag="GET" label="/v1/conversations/xgQQXg3hrtjh7AvZ">
-
-    ```bash {{ title: 'cURL' }}
-    curl https://api.protocol.chat/v1/conversations/xgQQXg3hrtjh7AvZ \
-      -H "Authorization: Bearer {token}"
-    ```
-
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.conversations.get('xgQQXg3hrtjh7AvZ')
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.conversations.get("xgQQXg3hrtjh7AvZ")
-    ```
-
-    ```php
-    $client = new \Protocol\ApiClient($token);
-
-    $client->conversations->get('xgQQXg3hrtjh7AvZ');
-    ```
-
-    </CodeGroup>
-
-    ```json {{ title: 'Response' }}
-    {
-      "id": "xgQQXg3hrtjh7AvZ",
-      "contact_id": "WAz8eIbvDR60rouK",
-      "group_id": null,
-      "pinned_message_id": null,
-      "is_pinned": false,
-      "is_muted": false,
-      "last_active_at": 705103200,
-      "last_opened_at": 705103200,
-      "created_at": 692233200,
-      "archived_at": null
-    }
-    ```
-
-  </Col>
-</Row>
-
----
-
-## Update a conversation {{ tag: 'PUT', label: '/v1/conversations/:id' }}
-
-<Row>
-  <Col>
-
-    This endpoint allows you to perform an update on a conversation. Examples of updates are pinning a message, muting or archiving the conversation, or pinning the conversation itself.
-
-    ### Optional attributes
-
-    <Properties>
-      <Property name="pinned_message_id" type="string">
-        Unique identifier for the pinned message.
-      </Property>
-      <Property name="is_pinned" type="boolean">
-        Whether or not the conversation has been pinned.
-      </Property>
-      <Property name="is_muted" type="boolean">
-        Whether or not the conversation has been muted.
-      </Property>
-      <Property name="archived_at" type="timestamp">
-        Timestamp of when the conversation was archived.
-      </Property>
-    </Properties>
-
-  </Col>
-  <Col sticky>
-
-    <CodeGroup title="Request" tag="PUT" label="/v1/conversations/xgQQXg3hrtjh7AvZ">
-
-    ```bash {{ title: 'cURL' }}
-    curl -X PUT https://api.protocol.chat/v1/conversations/xgQQXg3hrtjh7AvZ \
-      -H "Authorization: Bearer {token}" \
-      -d 'is_muted'=true
-    ```
-
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.conversations.update('xgQQXg3hrtjh7AvZ', {
-        is_muted: true,
-    })
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.conversations.update("xgQQXg3hrtjh7AvZ", is_muted=True)
-    ```
-
-    ```php
-    $client = new \Protocol\ApiClient($token);
-
-    $client->conversations->update('xgQQXg3hrtjh7AvZ', [
-      'is_muted' => true,
-    ]);
-    ```
-
-    </CodeGroup>
-
-    ```json {{ title: 'Response' }}
-    {
-      "id": "xgQQXg3hrtjh7AvZ",
-      "contact_id": "WAz8eIbvDR60rouK",
-      "group_id": null,
-      "pinned_message_id": null,
-      "is_pinned": false,
-      "is_muted": true,
-      "last_active_at": 705103200,
-      "last_opened_at": 705103200,
-      "created_at": 692233200,
-      "archived_at": null
-    }
-    ```
-
-  </Col>
-</Row>
-
----
-
-## Delete a conversation {{ tag: 'DELETE', label: '/v1/conversations/:id' }}
-
-<Row>
-  <Col>
-
-    This endpoint allows you to delete your conversations in Protocol. Note: This will permanently delete the conversation and all its messages — archive it instead if you want to be able to restore it later.
-
-  </Col>
-  <Col sticky>
-
-    <CodeGroup title="Request" tag="DELETE" label="/v1/conversations/xgQQXg3hrtjh7AvZ">
-
-    ```bash {{ title: 'cURL' }}
-    curl -X DELETE https://api.protocol.chat/v1/conversations/xgQQXg3hrtjh7AvZ \
-      -H "Authorization: Bearer {token}"
-    ```
-
-    ```js
-    import ApiClient from '@example/protocol-api'
-
-    const client = new ApiClient(token)
-
-    await client.conversations.delete('xgQQXg3hrtjh7AvZ')
-    ```
-
-    ```python
-    from protocol_api import ApiClient
-
-    client = ApiClient(token)
-
-    client.conversations.delete("xgQQXg3hrtjh7AvZ")
-    ```
-
-    ```php
-    $client = new \Protocol\ApiClient($token);
-
-    $client->conversations->delete('xgQQXg3hrtjh7AvZ');
-    ```
-
-    </CodeGroup>
 
   </Col>
 </Row>
