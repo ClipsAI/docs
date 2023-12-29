@@ -33,8 +33,8 @@ export function Layout({
                         lg:pb-8 lg:pt-4 lg:dark:border-white/10 xl:w-80"
                     >
 						<div className="hidden lg:flex">
-							<Link href="/" className='flex' aria-label="Home">
-								<Logo className="h-8 mr-36 " />
+							<Link href="/" className='w-32' aria-label="Home">
+								<Logo className="h-8 " />
 							</Link>
 						</div>
 						<Header />

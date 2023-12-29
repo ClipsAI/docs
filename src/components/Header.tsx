@@ -75,8 +75,8 @@ export const Header = forwardRef<
             <Search />
             <div className="flex items-center gap-5 lg:hidden">
                 <MobileNavigation />
-                <Link href="/" aria-label="Home">
-                    <Logo className="h-8 -ml-16" />
+                <Link href="/" className='w-32' aria-label="Home">
+                    <Logo className="h-8" />
                 </Link>
             </div>
             <div className="flex items-center gap-5">
