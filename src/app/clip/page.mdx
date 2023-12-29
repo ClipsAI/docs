@@ -1,0 +1,111 @@
+export const metadata = {
+  title: 'Clip',
+  description:
+    'Documentation about creating clips and the Clip class.',
+}
+
+# Clip
+
+As the name suggests, contacts are a core part of Protocol — the very reason Protocol exists is so you can have secure conversations with your contacts. On this page, we'll dive into the different contact endpoints you can use to manage contacts programmatically. We'll look at how to query, create, update, and delete contacts. {{ className: 'lead' }}
+
+## The Clip class
+
+The contact model contains all the information about your contacts, such as their username, avatar, and phone number. It also contains a reference to the conversation between you and the contact and information about when they were last active on Protocol.
+
+### Properties
+
+<Properties>
+    <Property name="id" type="string">
+        Unique identifier for the contact.
+    </Property>
+    <Property name="username" type="string">
+        The username for the contact.
+    </Property>
+    <Property name="phone_number" type="string">
+        The phone number for the contact.
+    </Property>
+    <Property name="avatar_url" type="string">
+        The avatar image URL for the contact.
+    </Property>
+    <Property name="display_name" type="string">
+        The contact display name in the contact list. By default, this is just the
+        username.
+    </Property>
+    <Property name="conversation_id" type="string">
+        Unique identifier for the conversation associated with the contact.
+    </Property>
+    <Property name="last_active_at" type="timestamp">
+        Timestamp of when the contact was last active on the platform.
+    </Property>
+    <Property name="created_at" type="timestamp">
+        Timestamp of when the contact was created.
+    </Property>
+</Properties>
+
+---
+
+## Creating clips
+
+<Row>
+  <Col>
+
+    Takes in the transcript of an mp4 or mp3 file and finds engaging audio or video
+    clips based on the passed in transcript.
+
+    ### Required parameters
+
+    <Properties>
+        <Property name="transcription" type="Transcription">
+            The transcription of the media file obtained from the transcribe function.
+        </Property>
+        
+    </Properties>
+
+    ### Optional parameters
+
+    <Properties>
+        <Property name="min_clip_length" type="float">
+            The minimum clip length in seconds.
+        </Property>
+        <Property name="max_clip_length" type="float">
+            The maximum clip length in seconds.
+        </Property>
+        <Property name="device" type="string">
+            The compute device to use when clipping, options: 'auto', 'cpu', 'cuda'
+        </Property>
+    </Properties>
+
+  </Col>
+
+  <Col sticky>
+
+    <CodeGroup title="Request" >
+        ```python
+        from clipsai import clip, transcribe, Clip
+
+        transcripiton = transcribe("video.mp4")
+        clips: List[Clip] = clip(
+            transcripiton=transcripiton,
+            min_clip_time=15,
+            max_clip_time=900,
+            device="auto"
+        )
+        ```
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "id": "WAz8eIbvDR60rouK",
+      "username": "FrankMcCallister",
+      "phone_number": "1-800-759-3000",
+      "avatar_url": "https://assets.protocol.chat/avatars/frank.jpg",
+      "display_name": null,
+      "conversation_id": "xgQQXg3hrtjh7AvZ",
+      "last_active_at": null,
+      "created_at": 692233200
+    }
+    ```
+
+  </Col>
+</Row>
+
