@@ -491,7 +491,9 @@ export function MobileSearch() {
         <div className="contents lg:hidden">
             <button
                 type="button"
-                className="flex h-6 w-6 items-center justify-center rounded-md transition hover:bg-zinc-900/5 ui-not-focus-visible:outline-none dark:hover:bg-white/5 lg:hidden"
+                className="flex h-6 w-6 items-center justify-center rounded-md
+                transition hover:bg-zinc-900/5 ui-not-focus-visible:outline-none
+                dark:hover:bg-white/5 lg:hidden"
                 aria-label="Find something..."
                 {...buttonProps}
             >
