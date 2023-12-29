@@ -4,7 +4,6 @@ import clsx from 'clsx'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
 import { Button } from '@/components/Button'
-import { GitHubIcon } from '@/components/Footer'
 import { Logo } from '@/components/Logo'
 import {
     MobileNavigation,
@@ -13,6 +12,7 @@ import {
 import { useMobileNavigationStore } from '@/components/MobileNavigation'
 import { MobileSearch, Search } from '@/components/Search'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { GitHubIcon } from '@/components/icons/GitHub'
 
 function TopLevelNavItem({
     href,

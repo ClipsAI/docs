@@ -10,6 +10,7 @@ import { Button } from '@/components/Button'
 import { useIsInsideMobileNavigation } from '@/components/MobileNavigation'
 import { useSectionStore } from '@/components/SectionProvider'
 import { Tag } from '@/components/Tag'
+import { GitHubIcon } from '@/components/icons/GitHub'
 import { remToPx } from '@/lib/remToPx'
 
 interface NavGroup {
@@ -269,8 +270,13 @@ export function Navigation(props: React.ComponentPropsWithoutRef<'nav'>) {
                     />
                 ))}
                 <li className="sticky bottom-0 z-10 mt-6 min-[416px]:hidden">
-                    <Button href="#" variant="filled" className="w-full">
-                        Sign in
+                    <Button 
+                        href="https://github.com/ClipsAI/clipsai"
+                        variant="filled"
+                        target='_blank'
+                        className="w-full"
+                    >
+                        <GitHubIcon className="h-5 w-5 fill-zinc-200 transition" />
                     </Button>
                 </li>
             </ul>
