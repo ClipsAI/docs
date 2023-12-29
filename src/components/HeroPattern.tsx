@@ -9,7 +9,7 @@ export function HeroPattern() {
             >
                 <div 
                     className="absolute inset-0 bg-gradient-to-r 
-                    to-[#DBFF75] from-[#36b49f] opacity-40
+                    to-[#2563EB]/30 from-[#2563EB]/80 opacity-40
                     dark:to-[#2563EB]/30 dark:from-[#2563EB]/50 dark:opacity-100
                     [mask-image:radial-gradient(farthest-side_at_top,white,transparent)]"
                 >
