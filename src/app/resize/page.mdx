@@ -6,7 +6,17 @@ export const metadata = {
 
 # Resize
 
-Conversations are an essential part of Protocol — they are the containers for the messages between you, your contacts, and groups. On this page, we’ll dive into the different conversation endpoints you can use to manage conversations programmatically. We'll look at how to query, create, update, and delete conversations. {{ className: 'lead' }}
+Clips AI's resizing feature utilizes
+[Pyannote](https://huggingface.co/pyannote/speaker-diarization-3.0) for speaker
+diarization and segmenting videos based on different speakers. Scene changes are
+detected using [PySceneDetect](https://www.scenedetect.com/docs/0.6.2/), which
+identifies transitions within the video. For face detection and landmark identification
+to focus on speakers' faces, the library utilizes
+[MTCNN](https://github.com/timesler/facenet-pytorch) and
+[MediaPipe](https://github.com/google/mediapipe). A K-Means algorithm clusters similar
+bounding boxes, ensuring consistent speaker focus across frames. This process
+dynamically reframes and resizes videos, optimizing for various aspect ratios while
+maintaining speaker-centric visual focus. For a detailed explanation, read [here](https://drive.google.com/file/d/13Oj38gIW8U6OfALtQR5AIDMQ9ZaLw_4O/view?usp=sharing). {{ className: 'lead' }}
 
 ## Crops Class
 
@@ -53,8 +63,8 @@ segment, and the start and end time of the segment.
 
 ## Segment Class
 
-Represents a segment of a video that was cropped, including the speakers, start & end
-time, and the crop coordinates.
+Represents a segment of a video that was cropped, including the speakers, start and end
+times, and the crop coordinates.
 
 ### Properties
 
