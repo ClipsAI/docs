@@ -6,7 +6,19 @@ export const metadata = {
 
 # Clip
 
-As the name suggests, contacts are a core part of Protocol — the very reason Protocol exists is so you can have secure conversations with your contacts. On this page, we'll dive into the different contact endpoints you can use to manage contacts programmatically. We'll look at how to query, create, update, and delete contacts. {{ className: 'lead' }}
+The clipping functionality leverages the
+[TextTiling algorithm](https://dl.acm.org/doi/10.5555/972684.972687), which segments
+long-form audio content into coherent clips. This approach, first conceptualized by
+[Marti A. Hearst](https://scholar.google.com/citations?user=664NOb0AAAAJ&hl=en) in the
+1990s, detects shifts in subtopics within the audio by analyzing word usage and
+distribution patterns. The algorithm begins by tokenizing the text into pseudo sentences
+and computing lexical scores to measure the similarity between adjacent text blocks.
+Boundaries are identified by calculating depth scores, which represent significant
+changes in the lexical score, indicating a transition to a different subtopic. The
+entire process focuses on detecting topic shifts rather than topics themselves, making
+it particularly effective in identifying distinct sections within a narrative. This
+methodology is instrumental in creating clips of varying lengths optimized for short
+and extended audio content segments. {{ className: 'lead' }}
 
 ## Clip Class
 

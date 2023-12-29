@@ -5,7 +5,12 @@ export const metadata = {
 
 # Transcribe
 
-Transcribe {{ className: 'lead' }}
+The transcribe function utilizes [WhisperX](https://github.com/m-bain/whisperX) to
+convert audio from media files into text transcripts. This transcription includes
+identifying the language of the audio, if not specified, and transcribing the content to
+produce a detailed Transcription object. This object contains comprehensive
+transcription information, including word-level and character-level timestamps, making
+it a prerequisite for clipping. {{ className: 'lead' }}
 
 ## Transcripiton Class
 
