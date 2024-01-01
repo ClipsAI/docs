@@ -82,9 +82,12 @@ export const Header = forwardRef<
             <div className="flex items-center gap-5">
                 <nav className="hidden md:block">
                     <ul role="list" className="flex items-center gap-8">
-                        <TopLevelNavItem href="/">API</TopLevelNavItem>
-                        <TopLevelNavItem href="#">Documentation</TopLevelNavItem>
-                        <TopLevelNavItem href="#">Support</TopLevelNavItem>
+                        <TopLevelNavItem href="/references/clip">
+                            References
+                        </TopLevelNavItem>
+                        <TopLevelNavItem href="https://demo.clipsai.com/projects">
+                            Demo
+                        </TopLevelNavItem>
                     </ul>
                 </nav>
                 <div

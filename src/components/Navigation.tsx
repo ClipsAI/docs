@@ -242,15 +242,15 @@ export const navigation: Array<NavGroup> = [
         title: 'Introduction',
         links: [
             { title: 'Quickstart', href: '/' },
-            { title: 'Errors', href: '/errors' },
+            // { title: 'Errors', href: '/errors' },
         ],
     },
     {
         title: 'References',
         links: [
-            { title: 'Clip', href: '/clip' },
-            { title: 'Resize', href: '/resize' },
-            { title: 'Transcribe', href: '/transcribe' },
+            { title: 'Clip', href: '/references/clip' },
+            { title: 'Resize', href: '/references/resize' },
+            { title: 'Transcribe', href: '/references/transcribe' },
         ],
     },
 ]
