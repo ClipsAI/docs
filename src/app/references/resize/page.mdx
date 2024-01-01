@@ -1,7 +1,6 @@
 export const metadata = {
   title: 'Resize',
-  description:
-    'On this page, we’ll dive into the different conversation endpoints you can use to manage conversations programmatically.',
+  description: 'Documentation about resizing a video, Segment and Crops class.',
 }
 
 # Resize
@@ -49,11 +48,8 @@ segment, and the start and end time of the segment.
 ### Methods
 
 <Properties>
-    <Property name="add_segment(segment: Segment)" type="None">
-        Add a new segment to the crops.
-    </Property>
-    <Property name="remove_segment(index: int)" type="Segment">
-        Remove a segment from the crops by index.
+    <Property name="copy()" type="Crops">
+        Returns a copy of the Crops instance.
     </Property>
     <Property name="to_dict()" type="dict">
         Returns a dictionary representation of the Crops instance.
@@ -91,8 +87,8 @@ times, and the crop coordinates.
 ### Methods
 
 <Properties>
-    <Property name="update_coordinates(x: int, y: int)" type="None">
-        Update the crop coordinates of the segment.
+    <Property name="copy()" type="Segment">
+        Returns a copy of the Segment instance.
     </Property>
     <Property name="to_dict()" type="dict">
         Returns a dictionary representation of the Segment properties.
@@ -171,22 +167,6 @@ times, and the crop coordinates.
         pyannote_auth_token="pyannote_token",
         aspect_ratio=(9, 16)
     )
-    ```
-
-
-    ```json {{ title: 'Response' }}
-    {
-      "id": "xgQQXg3hrtjh7AvZ",
-      "contact_id": "WAz8eIbvDR60rouK",
-      "group_id": null,
-      "pinned_message_id": null,
-      "is_pinned": false,
-      "is_muted": false,
-      "last_active_at": null,
-      "last_opened_at": null,
-      "created_at": 692233200,
-      "archived_at": null
-    }
     ```
 
   </Col>

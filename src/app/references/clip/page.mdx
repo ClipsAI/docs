@@ -1,0 +1,118 @@
+export const metadata = {
+  title: 'Clip',
+  description: 'Documentation about creating clips and the Clip class.',
+}
+
+# Clip
+
+The clipping functionality leverages the
+[TextTiling algorithm](https://dl.acm.org/doi/10.5555/972684.972687), which segments
+long-form audio content into coherent clips. This approach, first conceptualized by
+[Marti A. Hearst](https://scholar.google.com/citations?user=664NOb0AAAAJ&hl=en) in the
+1990s, detects shifts in subtopics within the audio by analyzing word usage and
+distribution patterns. The algorithm begins by tokenizing the text into pseudo sentences
+and computing lexical scores to measure the similarity between adjacent text blocks.
+Boundaries are identified by calculating depth scores, which represent significant
+changes in the lexical score, indicating a transition to a different subtopic. The
+entire process focuses on detecting topic shifts rather than topics themselves, making
+it particularly effective in identifying distinct sections within a narrative. This
+methodology is instrumental in creating clips of varying lengths optimized for short
+and extended audio content segments. {{ className: 'lead' }}
+
+## Clip Class
+
+Represents a clip of a video or audio file.
+
+### Properties
+
+<Properties>
+    <Property name="start_time" type="string">
+        The start time of the clip in seconds.
+    </Property>
+    <Property name="end_time" type="string">
+        The end time of the clip in seconds.
+    </Property>
+    <Property name="start_char" type="string">
+        The start character in the transcription of the clip.
+    </Property>
+    <Property name="end_char" type="string">
+        The end character in the transcription of the clip.
+    </Property>
+</Properties>
+
+### Methods
+
+<Properties>
+    <Property name="copy()" type="Clip">
+        Returns a copy of the Clip instance.
+    </Property>
+    <Property name="to_dict()" type="dict">
+        Returns a dictionary representation of the clip.
+    </Property>
+</Properties>
+
+---
+
+## Clip Funtion
+
+<Row>
+    <Col>
+
+        Takes in the transcript of an mp4 or mp3 file and finds engaging audio or video
+        clips based on the passed in transcript.
+
+        ### Required parameters
+
+        <Properties>
+            <Property name="transcription" type="Transcription">
+                The transcription of the media file obtained from the transcribe function.
+            </Property>
+            
+        </Properties>
+
+        ### Optional parameters
+
+        <Properties>
+            <Property name="min_clip_length" type="float">
+                The minimum clip length in seconds.
+            </Property>
+            <Property name="max_clip_length" type="float">
+                The maximum clip length in seconds.
+            </Property>
+            <Property name="cutoff_policy" type="string">
+                The policy used to determine how dissimilar adjacent embedding windows must
+                be to consider them to be from different segments (a boundary),
+                options: 'average', 'high', or 'low'.
+            </Property>
+            <Property name="smoothing_width" type="int">
+                The width of the window used by the smoothing method
+            </Property>
+            <Property name="window_compare_pool_method" type="string">
+                the method used to pool embeddings within windows (of size k) for comparison
+                to adjacent windows, options: 'mean', 'max'.
+            </Property>
+            <Property name="embedding_aggregation_pool_method" type="string">
+                the method used to pool embeddings within a segment to create a single
+                embedding for the segment, options: 'mean', 'max'.
+            </Property>
+            <Property name="device" type="string">
+                The compute device to use when clipping, options: 'auto', 'cpu', 'cuda'.
+            </Property>
+        </Properties>
+    </Col>
+
+    <Col sticky>
+        ```python
+        from clipsai import clip, transcribe, Clip
+
+        transcripiton = transcribe("video.mp4")
+        clips: List[Clip] = clip(
+            transcripiton=transcripiton,
+            min_clip_time=15,
+            max_clip_time=900,
+            device="auto"
+        )
+        ```
+    </Col>
+</Row>
+

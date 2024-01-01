@@ -1,0 +1,209 @@
+export const metadata = {
+  title: 'Transcribe',
+  description: '',
+}
+
+# Transcribe
+
+The transcribe function utilizes [WhisperX](https://github.com/m-bain/whisperX) to
+convert audio from media files into text transcripts. This transcription includes
+identifying the language of the audio, if not specified, and transcribing the content to
+produce a detailed Transcription object. This object contains comprehensive
+transcription information, including word-level and character-level timestamps, making
+it a prerequisite for clipping. {{ className: 'lead' }}
+
+## Transcripiton Class
+
+The Transcription class offers a detailed breakdown of audio or video transcriptions.
+It enables thorough analysis by providing structured access to the content at multiple
+levels - from individual characters and words to full sentences.
+
+### Properties
+
+<Properties>
+    <Property name="characters" type="list[Character]">
+        A list of characters from the text, represented as Character objects.
+    </Property>
+    <Property name="words" type="list[Word]">
+        A list of words from the text, represented as Word objects.
+    </Property>
+    <Property name="sentences" type="list[Sentence]">
+        A list of sentences from the text, represented as Sentence objects.
+    </Property>
+    <Property name="text" type="string">
+        The full textual content of the transcription.
+    </Property>
+    <Property name="language" type="string">
+        The language of the transcription.
+    </Property>
+    <Property name="created_time" type="datetime">
+        The time when the transcription was created.
+    </Property>
+    <Property name="start_time" type="float">
+        The start time of the transcript in seconds.
+    </Property>
+    <Property name="end_time" type="float">
+        The end time of the transcript in seconds.
+    </Property>
+    <Property name="source_software" type="string">
+        The software used for transcribing the audio.
+    </Property>
+</Properties>
+
+### Properties
+
+<Properties>
+    <Property 
+        name="find_char_index(target_time: float, type_of_time: str)"
+        type="int"
+    >
+        Finds the index in the transcript's character info who's start or end time is
+        closest to 'target_time' (seconds).
+    </Property>
+    <Property 
+        name="find_word_index(target_time: float, type_of_time: str)"
+        type="string"
+    >
+        Finds the index in the transcript's word info who's start or end time is closest
+        to 'target_time' (seconds)
+    </Property>
+    <Property 
+        name="find_sentence_index(target_time: float, type_of_time: str)"
+        type="list[Character]"
+    >
+        Finds the index in the transcript's sentence info who's start or end time is
+        closest to 'target_time' (seconds).
+    </Property>
+</Properties>
+
+---
+
+## Sentence Class
+
+Represents a sentence in a transcription.
+
+### Properties
+
+<Properties>
+    <Property name="start_time" type="float">
+        The start time of the sentence in seconds.
+    </Property>
+    <Property name="end_time" type="float">
+        The end time of the sentence in seconds.
+    </Property>
+    <Property name="start_char" type="int">
+        The start character in the transcription of the sentence.
+    </Property>
+    <Property name="end_char" type="int">
+        The end character in the transcription of the sentence.
+    </Property>
+    <Property name="text" type="string">
+        The text of the word.
+    </Property>
+</Properties>
+
+---
+
+## Word Class
+
+Represents a word in a transcription.
+
+### Properties
+
+<Properties>
+    <Property name="start_time" type="float">
+        The start time of the word in seconds.
+    </Property>
+    <Property name="end_time" type="float">
+        The end time of the word in seconds.
+    </Property>
+    <Property name="start_char" type="int">
+        The start character in the transcription of the word.
+    </Property>
+    <Property name="end_char" type="int">
+        The end character in the transcription of the word.
+    </Property>
+    <Property name="text" type="string">
+        The text of the word.
+    </Property>
+</Properties>
+
+---
+
+## Character Class
+
+Represents a character in a transcription.
+
+### Properties
+
+<Properties>
+    <Property name="start_time" type="float">
+        The start time of the character in seconds.
+    </Property>
+    <Property name="end_time" type="float">
+        The end time of the character in seconds.
+    </Property>
+    <Property name="word_index" type="int">
+        The index of the word in the transcription of the character.
+    </Property>
+    <Property name="sentence_index" type="int">
+        The index of the sentence in the transcription of the character.
+    </Property>
+    <Property name="text" type="string">
+        The text of the character.
+    </Property>
+</Properties>
+
+---
+
+## Transcribe Function
+
+<Row>
+  <Col>
+
+    Takes in a file in the form of mp3 or mp4 and transcribes it using WhisperX.
+
+    ### Required attributes
+
+    <Properties>
+        <Property name="media_file_path" type="string">
+            The path to the media mp3 or mp4 file to transcribe.
+        </Property>
+    </Properties>
+
+    ### Optional attributes
+
+    <Properties>
+        <Property name="language_code" type="string">
+            The ISO 639-1 language code of the media file. Default is "auto".
+        </Property>
+        <Property name="whisper_model_size" type="string">
+            The size of the whisper model to use,
+            options: tiny, base, small, medium, large, large-v1, large-v2, large-v3
+        </Property>
+        <Property name="precision" type="string">
+            Precision to perform prediction with,
+            options: float16, int8
+        </Property>
+        <Property name="device" type="string">
+            The device to use when transcribing,
+            options: auto, cpu, cuda
+        </Property>
+    </Properties>
+
+  </Col>
+
+  <Col sticky>
+    ```python {{ title: 'Request' }}
+    from clipsai import transcribe, Transcripiton
+
+    transcript: Transcripiton = transcribe(
+        media_file_path="video.mp4",
+        language_code="auto",
+        device="auto"
+    )
+    ```
+  </Col>
+</Row>
+
+
