@@ -101,73 +101,73 @@ times, and the crop coordinates.
 ## Resize Function
 
 <Row>
-  <Col>
+    <Col>
 
-    Resizes a video to a specified aspect ratio, with default being 9:16. It involves 
-    speaker diarization, scene detection, and face detection for resizing.
+        Resizes a video to a specified aspect ratio, with default being 9:16. It involves 
+        speaker diarization, scene detection, and face detection for resizing.
 
-    ### Required parameters
+        ### Required parameters
 
-    <Properties>
-        <Property name="video_file_path" type="string">
-            Absolute path to the video file.
-        </Property>
-        <Property name="pyannote_auth_token" type="string">
-            Authentication token for Pyannote, obtained from HuggingFace.
-        </Property>
-        <Property name="aspect_ratio" type="tuple[int, int]">
-            The target aspect ratio for resizing the video (width, height).
-        </Property>
-    </Properties>
+        <Properties>
+            <Property name="video_file_path" type="string">
+                Absolute path to the video file.
+            </Property>
+            <Property name="pyannote_auth_token" type="string">
+                Authentication token for Pyannote, obtained from HuggingFace.
+            </Property>
+            <Property name="aspect_ratio" type="tuple[int, int]">
+                The target aspect ratio for resizing the video (width, height).
+            </Property>
+        </Properties>
 
-    ### Optional parameters
+        ### Optional parameters
 
-    <Properties>
-        <Property name="min_segment_duration" type="float">
-            The minimum duration in seconds for a diarized speaker segment to be considered. Default is 1.5.
-        </Property>
-        <Property name="samples_per_segment" type="int">
-            The number of samples to take per speaker segment for face detection. Default is 13.
-        </Property>
-        <Property name="face_detect_width" type="int">
-            The width in pixels to which the video will be downscaled for face detection. Default is 960.
-        </Property>
-        <Property name="face_detect_margin" type="int">
-            Margin around detected faces, used in the MTCNN face detector. Default is 20.
-        </Property>
-        <Property name="face_detect_post_process" type="bool">
-            If set to True, post-processing is applied to the face detection output to make it appear more natural. Default is False.
-        </Property>
-        <Property name="n_face_detect_batches" type="int">
-            Number of batches for processing face detection when using GPUs. Default is 8.
-        </Property>
-        <Property name="min_scene_duration" type="float">
-            Minimum duration in seconds for a scene to be considered during scene detection. Default is 0.25.
-        </Property>
-        <Property name="scene_merge_threshold" type="float">
-            Threshold in seconds for merging scene changes with speaker segments. Default is 0.25.
-        </Property>
-        <Property name="time_precision" type="int">
-            Precision (number of decimal places) for start and end times in diarization. Default is 6.
-        </Property>
-        <Property name="device" type="string">
-            The compute device ('auto', 'cpu', or 'cuda') for processing. Default is 'auto'.
-        </Property>
-    </Properties>
+        <Properties>
+            <Property name="min_segment_duration" type="float">
+                The minimum duration in seconds for a diarized speaker segment to be considered. Default is 1.5.
+            </Property>
+            <Property name="samples_per_segment" type="int">
+                The number of samples to take per speaker segment for face detection. Default is 13.
+            </Property>
+            <Property name="face_detect_width" type="int">
+                The width in pixels to which the video will be downscaled for face detection. Default is 960.
+            </Property>
+            <Property name="face_detect_margin" type="int">
+                Margin around detected faces, used in the MTCNN face detector. Default is 20.
+            </Property>
+            <Property name="face_detect_post_process" type="bool">
+                If set to True, post-processing is applied to the face detection output to make it appear more natural. Default is False.
+            </Property>
+            <Property name="n_face_detect_batches" type="int">
+                Number of batches for processing face detection when using GPUs. Default is 8.
+            </Property>
+            <Property name="min_scene_duration" type="float">
+                Minimum duration in seconds for a scene to be considered during scene detection. Default is 0.25.
+            </Property>
+            <Property name="scene_merge_threshold" type="float">
+                Threshold in seconds for merging scene changes with speaker segments. Default is 0.25.
+            </Property>
+            <Property name="time_precision" type="int">
+                Precision (number of decimal places) for start and end times in diarization. Default is 6.
+            </Property>
+            <Property name="device" type="string">
+                The compute device ('auto', 'cpu', or 'cuda') for processing. Default is 'auto'.
+            </Property>
+        </Properties>
 
-  </Col>
+    </Col>
 
-  <Col sticky>
+    <Col sticky>
 
-    ```python {{ title: 'Request' }}
-    from clipsai import resize
+        ```python {{ title: 'Request' }}
+        from clipsai import resize, Crops
 
-    crops = resize(
-        video_file_path="video.mp4",
-        pyannote_auth_token="pyannote_token",
-        aspect_ratio=(9, 16)
-    )
-    ```
+        crops: Crops = resize(
+            video_file_path="video.mp4",
+            pyannote_auth_token="pyannote_token",
+            aspect_ratio=(9, 16)
+        )
+        ```
 
-  </Col>
+    </Col>
 </Row>

@@ -1,5 +1,3 @@
-import { Guides } from '@/components/Guides'
-import { Resources } from '@/components/Resources'
 import { HeroPattern } from '@/components/HeroPattern'
 
 export const metadata = {
@@ -21,9 +19,9 @@ resize its aspect ratio from 16:9 to 9:16. {{ className: 'lead' }}
 	<Button href="https://github.com/ClipsAI/clipsai" target="_blank" arrow="right">
     	<>GitHub</>
   	</Button>
-  	<Button href="https://demo.clipsai.com/projects" target="_blank" variant="outline">
+  	{/* <Button href="https://demo.clipsai.com/projects" target="_blank" variant="outline">
     	<>Demo</>
-  	</Button>
+  	</Button> */}
 </div>
 
 
@@ -39,11 +37,14 @@ resize its aspect ratio from 16:9 to 9:16. {{ className: 'lead' }}
 
 ## Installation
 
-<CodeGroup>
-    ```bash {{ language: 'python' }}
-    pip install clipsai
-    ```
-</CodeGroup>
+```bash {{ language: 'python' }}
+pip install clipsai
+```
+
+```bash {{ language: 'python' }}
+pip install whisperx@git+https://github.com/m-bain/whisperx.git
+```
+
 
 
 ## Creating clips
