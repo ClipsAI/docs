@@ -1,46 +1,64 @@
-# Protocol
+# ClipsAI
 
-Protocol is a [Tailwind UI](https://tailwindui.com) site template built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org).
+<!-- [![PyPI version](https://badge.fury.io/py/project-name.svg)](https://badge.fury.io/py/project-name) -->
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Getting started
 
-To get started with this template, first install the npm dependencies:
+## Quickstart
+
+Clips AI is an open-source Python library that automatically converts long videos into
+clips. With just a few lines of code, you can segment a video into multiple clips and
+resize its aspect ratio from 16:9 to 9:16.
+
+> **Note:** Clips AI is designed for audio-centric, narrative-based videos such as
+podcasts, interviews, speeches, and sermons. It actively employs video transcripts to
+identify and create clips. Our resizing algorithm dynamically reframes and focuses on
+the current speaker, converting the video into various aspect ratios.
+
+For full documentation, visit [Clips AI Documentation](https://docs.clipsai.com/)
+
+### Installation
 
 ```bash
-npm install
+pip install clipsai
 ```
-
-Next, run the development server:
 
 ```bash
-npm run dev
+pip install whisperx@git+https://github.com/m-bain/whisperx.git
 ```
 
-Finally, open [http://localhost:3000](http://localhost:3000) in your browser to view the website.
+## Creating clips
 
-## Customizing
+Clips are created based on the transcript of a video. You'll first need to transcribe
+the video, and then you can create clips based on the transcript.
+[WhisperX](https://github.com/m-bain/whisperX) is utilized under the hood to transcribe
+videos.
 
-You can start editing this template by modifying the files in the `/src` folder. The site will auto-update as you edit these files.
+```python
+from clipsai import clip, transcribe
 
-## Global search
+transcripiton = transcribe("video.mp4")
+clips = clip(transcripiton)
 
-This template includes a global search that's powered by the [FlexSearch](https://github.com/nextapps-de/flexsearch) library. It's available by clicking the search input or by using the `⌘K` shortcut.
+print("StartTime: ", clips[0].start_time)
+print("EndTime: ", clips[0].end_time)
+```
 
-This feature requires no configuration, and works out of the box by automatically scanning your documentation pages to build its index. You can adjust the search parameters by editing the `/src/mdx/search.mjs` file.
+## Resizing a video
 
-## License
+You'll need to create an access token on hugging face to resize a video because 
+[Pyannote](https://github.com/pyannote/pyannote-audio) is utilized for speaker 
+diarization. You won't be charged for using Pyannote and instructions are on the
+[Pyannote HuggingFace ](https://huggingface.co/pyannote/speaker-diarization-3.0) page.
 
-This site template is a commercial product and is licensed under the [Tailwind UI license](https://tailwindui.com/license).
+```python
+from clipsai import resize
 
-## Learn more
+crops = resize(
+    video_file_path="video.mp4",
+    pyannote_auth_token="pyannote_token",
+    aspect_ratio=(9, 16)
+)
 
-To learn more about the technologies used in this site template, see the following resources:
-
-- [Tailwind CSS](https://tailwindcss.com/docs) - the official Tailwind CSS documentation
-- [Next.js](https://nextjs.org/docs) - the official Next.js documentation
-- [Headless UI](https://headlessui.dev) - the official Headless UI documentation
-- [Framer Motion](https://www.framer.com/docs/) - the official Framer Motion documentation
-- [MDX](https://mdxjs.com/) - the official MDX documentation
-- [Algolia Autocomplete](https://www.algolia.com/doc/ui-libraries/autocomplete/introduction/what-is-autocomplete/) - the official Algolia Autocomplete documentation
-- [FlexSearch](https://github.com/nextapps-de/flexsearch) - the official FlexSearch documentation
-- [Zustand](https://docs.pmnd.rs/zustand/getting-started/introduction) - the official Zustand documentation
+print("Crops: ", crops.segments)
+```
