@@ -54,17 +54,15 @@ the video, and then you can create clips based on the transcript.
 [WhisperX](https://github.com/m-bain/whisperX) is utilized under the hood to transcribe
 videos.
 
-<CodeGroup>
-    ```python
-    from clipsai import clip, transcribe
+```python
+from clipsai import clip, transcribe
 
-    transcripiton = transcribe("video.mp4")
-    clips = clip(transcripiton)
+transcripiton = transcribe("video.mp4")
+clips = clip(transcripiton)
 
-    print("StartTime: ", clips[0].start_time)
-    print("EndTime: ", clips[0].end_time)
-    ```
-</CodeGroup>
+print("StartTime: ", clips[0].start_time)
+print("EndTime: ", clips[0].end_time)
+```
 
 <div className="not-prose">
 	<Button href="/references/clip" variant="text" arrow="right">
@@ -79,7 +77,6 @@ You'll need to create an access token on hugging face to resize a video because
 diarization. You won't be charged for using Pyannote and instructions are on the
 [Pyannote HuggingFace ](https://huggingface.co/pyannote/speaker-diarization-3.0) page.
 
-<CodeGroup>
 
 ```python
 from clipsai import resize
@@ -93,7 +90,6 @@ crops = resize(
 print("Crops: ", crops.segments)
 ```
 
-</CodeGroup>
 
 <div className="not-prose">
 	<Button href="/references/resize" variant="text" arrow="right">
