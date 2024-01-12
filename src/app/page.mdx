@@ -19,6 +19,9 @@ resize its aspect ratio from 16:9 to 9:16. {{ className: 'lead' }}
 	<Button href="https://github.com/ClipsAI/clipsai" target="_blank" arrow="right">
     	<>GitHub</>
   	</Button>
+    <Button href="https://demo.clipsai.com" target="_blank" variant="outline">
+    	<>Demo</>
+  	</Button>
 </div>
 
 
@@ -54,8 +57,8 @@ videos.
 ```python
 from clipsai import clip, transcribe
 
-transcripiton = transcribe("video.mp4")
-clips = clip(transcripiton)
+transcription = transcribe("video.mp4")
+clips = clip(transcription)
 
 print("StartTime: ", clips[0].start_time)
 print("EndTime: ", clips[0].end_time)

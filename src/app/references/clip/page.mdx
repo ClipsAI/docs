@@ -105,9 +105,9 @@ Represents a clip of a video or audio file.
         ```python
         from clipsai import clip, transcribe, Clip
 
-        transcripiton = transcribe("video.mp4")
+        transcription = transcribe("video.mp4")
         clips: List[Clip] = clip(
-            transcripiton=transcripiton,
+            transcription=transcription,
             min_clip_time=15,
             max_clip_time=900,
             device="auto"

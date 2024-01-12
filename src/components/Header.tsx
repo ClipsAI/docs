@@ -85,9 +85,9 @@ export const Header = forwardRef<
                         <TopLevelNavItem href="/references/clip">
                             References
                         </TopLevelNavItem>
-                        {/* <TopLevelNavItem href="https://demo.clipsai.com/projects">
+                        <TopLevelNavItem href="https://demo.clipsai.com">
                             Demo
-                        </TopLevelNavItem> */}
+                        </TopLevelNavItem>
                     </ul>
                 </nav>
                 <div
