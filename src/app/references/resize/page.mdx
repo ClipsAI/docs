@@ -5,26 +5,129 @@ export const metadata = {
 
 # Resize
 
-The resizing feature utilizes [Pyannote](https://huggingface.co/pyannote/speaker-diarization-3.0) for speaker diarization. Scene changes are detected using [PySceneDetect](https://www.scenedetect.com/docs/0.6.2/). [MTCNN](https://github.com/timesler/facenet-pytorch) is used for face detection and [MediaPipe](https://github.com/google/mediapipe) for face landmark detection. These libraries are leveraged to dynamically resize a videos to focus on whoever is speaking at any given moment. For a detailed explanation, read [here](https://drive.google.com/file/d/1rWbPP8E9KUhxASY_LGuMBmZDvUrQpHCV/view?usp=drive_link).{{ className: 'lead' }}
+The resizing feature relies on three subcomponents:{{ className: 'lead' }}
+
+1) Speaker diarization with [Pyannote](https://huggingface.co/pyannote/speaker-diarization-3.0) {{ className: 'lead' }}
+2) Scene change detection with [PySceneDetect](https://www.scenedetect.com/docs/0.6.2/) {{ className: 'lead' }}
+3) Face detection with [MTCNN](https://github.com/timesler/facenet-pytorch) and [MediaPipe](https://github.com/google/mediapipe) {{ className: 'lead' }}
+
+These libraries are leveraged to dynamically resize a videos to focus on whoever is speaking at any given moment. For a detailed explanation of the algorithm, read [here](https://drive.google.com/file/d/1rWbPP8E9KUhxASY_LGuMBmZDvUrQpHCV/view?usp=drive_link).{{ className: 'lead' }}
+
+## Usage
+
+The following returns the information to be able to resize the video.
+
+```python
+from clipsai import resize
+
+crops = resize(
+    video_file_path="/abs/path/to/video.mp4",
+    pyannote_auth_token="pyannote_token",
+    aspect_ratio=(9, 16)
+)
+
+print("Crops: ", crops.segments)
+```
+
+To actually resize the video using the returned **crops**, you'll first need to install [ffmpeg](https://ffmpeg.org/) and possibly [libmagic](https://man7.org/linux/man-pages/man3/libmagic.3.html) as well. Note that these are command line libraries, *not* python libraries. Once done, simply run the following code.
+
+```python
+media_editor = clipsai.MediaEditor()
+
+# use this if the file contains video stream only
+media_file = clipsai.VideoFile("/abs/path/to/video_only_file.mp4")
+# use this if the file contains both audio and video stream
+media_file = clipsai.AudioVideoFile("/abs/path/to/video.mp4")
+
+resized_video_file = media_editor.resize_video(
+    original_video_file=media_file,
+    resized_video_file_path="/abs/path/to/resized/video.mp4",  # doesn't exist yet
+    width=crops.crop_width,
+    height=crops.crop_height,
+    segments=crops.to_dict()["segments"],
+)
+```
+
+
+
+## Resize Function
+
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/resize/resize.py)
+
+<Properties>
+    <Property name="resize" type="-> Crops">
+        Dynamically resizes a video to a specified aspect ratio (default 9:16) to focus on the current speaker
+    </Property>
+</Properties>
+
+**Required Parameters**
+<Parameters>
+    <Parameter name="video_file_path" type="string">
+        Absolute path to the video file to resize.
+    </Parameter>
+    <Parameter name="pyannote_auth_token" type="string">
+        Authentication token for Pyannote, obtained from HuggingFace.
+    </Parameter>
+</Parameters>
+
+**Optional Parameters**
+
+<Parameters>
+    <Parameter name="aspect_ratio" type="tuple[int, int] = (9, 16)">
+        The target aspect ratio for resizing the video (width, height). Default is (9, 16).
+    </Parameter>
+    <Parameter name="min_segment_duration" type="float = 1.5">
+        The minimum duration in seconds for a diarized speaker segment to be considered. Default is 1.5.
+    </Parameter>
+    <Parameter name="samples_per_segment" type="int = 13">
+        The number of samples to take per speaker segment for face detection. Default is 13. Reduce this for faster performance (at the sake of worse accuracy).
+    </Parameter>
+    <Parameter name="face_detect_width" type="int = 960">
+        The width in pixels to which the video will be downscaled for face detection. Smaller widths detect faster, but may be less accurate. Default is 960.
+    </Parameter>
+    <Parameter name="face_detect_margin" type="int = 20">
+        Margin around detected faces, used in the MTCNN face detector. Default is 20.
+    </Parameter>
+    <Parameter name="face_detect_post_process" type="bool = False">
+        If set to True, post-processing is applied to the face detection output to make it appear more natural. Default is False.
+    </Parameter>
+    <Parameter name="n_face_detect_batches" type="int = 8">
+        Number of batches for processing face detection when using GPUs. This is vital for proper memory allocation. Default is 8.
+    </Parameter>
+    <Parameter name="min_scene_duration" type="float = 0.25">
+        Minimum duration in seconds for a scene to be considered during scene detection. Default is 0.25.
+    </Parameter>
+    <Parameter name="scene_merge_threshold" type="float = 0.25">
+        Threshold in seconds for merging scene changes with speaker segments. Default is 0.25.
+    </Parameter>
+    <Parameter name="time_precision" type="int = 6">
+        Precision (number of decimal places) for start and end times of the segments. Default is 6. Less than 4 decimal places may result in rounding errors for the purposes of cropping the video with ffmpeg.
+    </Parameter>
+    <Parameter name="device" type="string: cuda | cpu = None">
+        PyTorch device to perform computations on. Default is None, which auto detects the correct device.
+    </Parameter>
+</Parameters>
 
 ## Crops Class
 
-Represents the crop and resize information of a video including the original dimensions, the crop dimensions, and the segments of the video that were cropped. Segments provide the x-y coordinates the video should be cropped to, the speakers present in the segment, and the start/end time of the segment.
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/resize/crops.py)
+
+Represents the resizing information for an entire video including the video's original width and height dimensions, the video's resized width and height dimensions, and the segments of the video for focusing on the current speaker. Segments are defined over an interval of time, providing the x-y coordinate of the top left corner of a rectangle with pixel dimensions `crop_width` by `crop_height` to focus on the current speaker.
 
 ### Properties
 
 <Properties>
     <Property name="crop_width" type="int">
-        The width of the resized video based on the number of pixels.
+        The width of the resized video in number of pixels.
     </Property>
     <Property name="crop_height" type="int">
-        The height of the resized video based on the number of pixels.
+        The height of the resized video in number of pixels.
     </Property>
     <Property name="original_width" type="int">
-        The width of the original video based on the number of pixels.
+        The width of the original video in number of pixels.
     </Property>
     <Property name="original_height" type="int">
-        The height of the original video based on the number of pixels.
+        The height of the original video in number of pixels.
     </Property>
     <Property name="segments" type="List[Segment]">
         The list of Segments providing the crop coordinates and times.
@@ -34,10 +137,10 @@ Represents the crop and resize information of a video including the original dim
 ### Methods
 
 <Properties>
-    <Property name="copy()" type="Crops">
+    <Property name="copy" type="-> Crops">
         Returns a copy of the Crops instance.
     </Property>
-    <Property name="to_dict()" type="dict">
+    <Property name="to_dict" type="-> dict">
         Returns a dictionary representation of the Crops instance.
     </Property>
 </Properties>
@@ -46,8 +149,9 @@ Represents the crop and resize information of a video including the original dim
 
 ## Segment Class
 
-Represents a segment of a video that was cropped, including the speakers, start and end
-times, and the crop coordinates.
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/resize/segment.py)
+
+Segments are defined over an interval of time in the video, providing the x-y coordinate of the top left corner of a rectangle with pixel dimensions `crop_width` by `crop_height` to focus on the current speaker.
 
 ### Properties
 
@@ -73,87 +177,10 @@ times, and the crop coordinates.
 ### Methods
 
 <Properties>
-    <Property name="copy()" type="Segment">
+    <Property name="copy" type="-> Segment">
         Returns a copy of the Segment instance.
     </Property>
-    <Property name="to_dict()" type="dict">
+    <Property name="to_dict" type="-> dict">
         Returns a dictionary representation of the Segment properties.
     </Property>
 </Properties>
-
-
----
-
-## Resize Function
-
-<Row>
-    <Col>
-
-        Resizes a video to a specified aspect ratio, with default being 9:16. It involves 
-        speaker diarization, scene detection, and face detection for resizing.
-
-        ### Required parameters
-
-        <Properties>
-            <Property name="video_file_path" type="string">
-                Absolute path to the video file.
-            </Property>
-            <Property name="pyannote_auth_token" type="string">
-                Authentication token for Pyannote, obtained from HuggingFace.
-            </Property>
-            <Property name="aspect_ratio" type="tuple[int, int]">
-                The target aspect ratio for resizing the video (width, height).
-            </Property>
-        </Properties>
-
-        ### Optional parameters
-
-        <Properties>
-            <Property name="min_segment_duration" type="float">
-                The minimum duration in seconds for a diarized speaker segment to be considered. Default is 1.5.
-            </Property>
-            <Property name="samples_per_segment" type="int">
-                The number of samples to take per speaker segment for face detection. Default is 13.
-            </Property>
-            <Property name="face_detect_width" type="int">
-                The width in pixels to which the video will be downscaled for face detection. Default is 960.
-            </Property>
-            <Property name="face_detect_margin" type="int">
-                Margin around detected faces, used in the MTCNN face detector. Default is 20.
-            </Property>
-            <Property name="face_detect_post_process" type="bool">
-                If set to True, post-processing is applied to the face detection output to make it appear more natural. Default is False.
-            </Property>
-            <Property name="n_face_detect_batches" type="int">
-                Number of batches for processing face detection when using GPUs. Default is 8.
-            </Property>
-            <Property name="min_scene_duration" type="float">
-                Minimum duration in seconds for a scene to be considered during scene detection. Default is 0.25.
-            </Property>
-            <Property name="scene_merge_threshold" type="float">
-                Threshold in seconds for merging scene changes with speaker segments. Default is 0.25.
-            </Property>
-            <Property name="time_precision" type="int">
-                Precision (number of decimal places) for start and end times in diarization. Default is 6.
-            </Property>
-            <Property name="device" type="string">
-                The compute device ('auto', 'cpu', or 'cuda') for processing. Default is 'auto'.
-            </Property>
-        </Properties>
-
-    </Col>
-
-    <Col sticky>
-
-        ```python {{ title: 'Request' }}
-        from clipsai import resize, Crops
-
-        crops: Crops = resize(
-            video_file_path="video.mp4",
-            pyannote_auth_token="pyannote_token",
-            aspect_ratio=(9, 16)
-        )
-        ```
-
-    </Col>
-</Row>

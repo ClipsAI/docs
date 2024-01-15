@@ -7,9 +7,11 @@ export const metadata = {
 
 The transcribing feature utilizes [WhisperX](https://github.com/m-bain/whisperX) (an open-source wrapper on [Whisper](https://github.com/openai/whisper) with additional functionality for detecting start and stop times for each word) to transcribe audio or video. Transcribing the content produces a Transcription object with comprehensive transcription information including the word-level, character-level, and sentence-level timestamps. Transcribing content is a prerequisite for clipping content.{{ className: 'lead' }}
 
-&nbsp;
+---
 
-```python {{ title: 'Request' }}
+## Usage
+
+```python
     from clipsai import Transcriber
 
     transcriber = Transcriber()
@@ -17,34 +19,24 @@ The transcribing feature utilizes [WhisperX](https://github.com/m-bain/whisperX)
         audio_file_path="/abs/path/to/video.mp4"
     )
 ```
-[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/transcribe)
+
 
 ---
 
 ## Transcriber Class 
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/transcribe/transcriber.py)
+
 A class for transcribing audio or video using WhisperX.
-
-### Attributes
-
-<Properties>
-    <Property name="model_size" type="string">
-        One of the [model sizes](https://huggingface.co/openai/whisper-large#model-details) implemented by whisper/whisperx.
-    </Property>
-    <Property name="device" type="string: cpu | cuda">
-        PyTorch device to perform computations on. Default is None (auto detects the correct device).
-    </Property>
-    <Property name="precision" type="string: float16 | int8">
-       Precision to perform prediction with.
-    </Property>
-</Properties>
 
 ### Methods
 
 <Properties>
-    <Property name="transcribe" type="Transcription">
+    <Property name="transcribe" type="-> Transcription">
         Transcribes an audio or video file.
     </Property>
 </Properties>
+
+**Required Parameters**
 
 <Parameters>
     <Parameter
@@ -53,8 +45,11 @@ A class for transcribing audio or video using WhisperX.
     >
         Absolute path to the audio or video file to transcribe.
     </Parameter>
+</Parameters>
 
+**Optional Parameters**
 
+<Parameters>
     <Parameter
         name="iso6391_lang_code"
         type="string = None"
@@ -72,10 +67,12 @@ A class for transcribing audio or video using WhisperX.
 
 
 <Properties>
-    <Property name="detect_language" type="string">
+    <Property name="detect_language" type="-> string">
         Detects the language of an audio or video file.
     </Property>
 </Properties>
+
+**Required Parameters**
 
 <Parameters>
     <Parameter
@@ -84,8 +81,11 @@ A class for transcribing audio or video using WhisperX.
     >
         Absolute path to the audio or video file to transcribe.
     </Parameter>
+</Parameters>
 
+**Optional Parameters**
 
+<Parameters>
     <Parameter
         name="iso6391_lang_code"
         type="string = None"
@@ -105,6 +105,7 @@ A class for transcribing audio or video using WhisperX.
 ---
 
 ## Transcription Class
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/transcribe/transcription.py)
 
 The Transcription class offers a detailed breakdown of audio or video transcriptions.
 It enables thorough analysis by providing structured access to the content at multiple
@@ -147,12 +148,14 @@ levels - from individual characters and words to full sentences.
 <Properties>
     <Property 
         name="find_word_index"
-        type="int"
+        type="-> int"
     >
         Finds the index in the transcript's character info who's start or end time is
         closest to 'target_time' (seconds).
     </Property>
 </Properties>
+
+**Required Parameters**
 
 <Parameters>
     <Parameter
@@ -175,12 +178,14 @@ levels - from individual characters and words to full sentences.
 <Properties>
     <Property 
         name="find_sentence_index"
-        type="int"
+        type="-> int"
     >
         Finds the index in the transcript's sentence info who's start or end time is
         closest to 'target_time' (seconds).
     </Property>
 </Properties>
+
+**Required Parameters**
 
 <Parameters>
     <Parameter
@@ -202,6 +207,8 @@ levels - from individual characters and words to full sentences.
 ---
 
 ## Sentence Class
+
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/transcribe/transcription_element.py)
 
 Represents a sentence in a transcription.
 
@@ -229,8 +236,8 @@ Represents a sentence in a transcription.
 
 <Properties>
     <Property 
-        name="to_dict()"
-        type="dict"
+        name="to_dict"
+        type="-> dict"
     >
         Returns the properties of the sentence as a dictionary.
 
@@ -240,6 +247,8 @@ Represents a sentence in a transcription.
 ---
 
 ## Word Class
+
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/transcribe/transcription_element.py)
 
 Represents a word in a transcription.
 
@@ -267,8 +276,8 @@ Represents a word in a transcription.
 
 <Properties>
     <Property 
-        name="to_dict()"
-        type="dict"
+        name="to_dict"
+        type="-> dict"
     >
         Returns the properties of the word as a dictionary.
 
@@ -278,6 +287,8 @@ Represents a word in a transcription.
 ---
 
 ## Character Class
+
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/transcribe/transcription_element.py)
 
 Represents a character in a transcription.
 
@@ -298,5 +309,17 @@ Represents a character in a transcription.
     </Property>
     <Property name="text" type="string">
         The text of the character.
+    </Property>
+</Properties>
+
+### Methods
+
+<Properties>
+    <Property 
+        name="to_dict"
+        type="-> dict"
+    >
+        Returns the properties of the character as a dictionary.
+
     </Property>
 </Properties>

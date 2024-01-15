@@ -5,9 +5,79 @@ export const metadata = {
 
 # Clip
 
-The clipping feature leverages the [TextTiling algorithm](https://dl.acm.org/doi/10.5555/972684.972687), which segments long-form audio content into coherent clips. This approach, first conceptualized by [Marti A. Hearst](https://scholar.google.com/citations?user=664NOb0AAAAJ&hl=en) in the 1990s, detects shifts in the topics of a piece of content by analyzing the word usage and distribution patterns of the transcript. The algorithm begins by tokenizing the text into pseudo sentences and computing lexical scores to measure the similarity between adjacent text blocks. Boundaries are identified by calculating depth scores, which represent significant changes in the lexical score, indicating a transition to a different subtopic. The entire process focuses on detecting topic shifts rather than topics themselves, making it particularly effective in identifying distinct sections within a narrative. This methodology is instrumental in creating clips of varying lengths optimized for short and extended audio content segments. {{ className: 'lead' }}
+
+
+The clipping feature leverages the [TextTiling algorithm](https://dl.acm.org/doi/10.5555/972684.972687) to segment long-form audio content into coherent clips using the transcript. This approach, first conceptualized by [Marti A. Hearst](https://scholar.google.com/citations?user=664NOb0AAAAJ&hl=en) in the 1990s, detects shifts in the topics of a piece of content by analyzing word usage and distribution patterns. Thanks to recent advances in NLP, [Texttiling with BERT Embeddings](https://arxiv.org/abs/2106.12978) provides significant improvements over Texttiling's original formulation and can be readily applied to SOA transcriptions using [Whisper](https://github.com/openai/whisper). The algorithm segments the text at the granularity of sentences with the entire process focusing on detecting topic shifts rather than topics themselves. This is particularly effective in identifying distinct sections within a narrative and, consequently, clips of varying lengths optimized for short and extended audio content segments. {{ className: 'lead' }}
+
+---
+
+## Usage
+
+The following returns the start and end time of the clips.
+
+```python
+from clipsai import ClipFinder, Transcriber
+
+transcriber = Transcriber()
+transcription = transcriber.transcribe(audio_file_path="/abs/path/to/video.mp4")
+
+clipfinder = ClipFinder()
+clips = clipfinder.find_clips(transcription=transcription)
+
+print("StartTime: ", clips[0].start_time)
+print("EndTime: ", clips[0].end_time)
+```
+
+To actually trim the video using the returned **clips**, you'll first need to install [ffmpeg](https://ffmpeg.org/) and possibly [libmagic](https://man7.org/linux/man-pages/man3/libmagic.3.html) as well. Note that these are command line libraries, *not* python libraries. Once done, simply run the following code.
+
+```python
+media_editor = clipsai.MediaEditor()
+
+# use this if the file contains audio stream only
+media_file = clipsai.AudioFile("/abs/path/to/audio_only_file.mp4")
+# use this if the file contains both audio and video stream
+media_file = clipsai.AudioVideoFile("/abs/path/to/video.mp4")
+
+clip = clips[0]  # select the clip you'd like to trim
+clip_media_file = media_editor.trim(
+    media_file=media_file,
+    start_time=clip.start_time,
+    end_time=clip.end_time,
+    trimmed_media_file_path="/abs/path/to/clip.mp4",  # doesn't exist yet
+)
+```
+
+---
+
+## ClipFinder Class
+
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/clip/clipfinder.py)
+
+A class for finding engaging clips based on the input transcript.
+
+### Methods
+
+<Properties>
+    <Property name="find_clips" type="-> list[Clip]">
+        Finds clips in an audio file's transcription using the TextTiling Algorithm.
+    </Property>
+</Properties>
+
+**Required Parameters**
+
+<Parameters>
+    <Parameter
+        name="transcription"
+        type="Transcription"
+    >
+        The transcription of an audio or video file to find clips from.
+    </Parameter>
+</Parameters>
+
 
 ## Clip Class
+
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/clip/clip.py)
 
 Represents a clip of a video or audio file.
 
@@ -31,76 +101,10 @@ Represents a clip of a video or audio file.
 ### Methods
 
 <Properties>
-    <Property name="copy()" type="Clip">
+    <Property name="copy" type="-> Clip">
         Returns a copy of the Clip instance.
     </Property>
-    <Property name="to_dict()" type="dict">
+    <Property name="to_dict" type="-> dict">
         Returns a dictionary representation of the clip.
     </Property>
 </Properties>
-
----
-
-## Clip Function
-
-<Row>
-    <Col>
-
-        Takes in the transcript of an mp4 or mp3 file and finds engaging audio or video
-        clips based on the input transcript.
-
-        ### Required parameters
-
-        <Properties>
-            <Property name="transcription" type="Transcription">
-                The transcription of the media file obtained from the transcribe function.
-            </Property>
-            
-        </Properties>
-
-        ### Optional parameters
-
-        <Properties>
-            <Property name="min_clip_length" type="float">
-                The minimum clip length in seconds.
-            </Property>
-            <Property name="max_clip_length" type="float">
-                The maximum clip length in seconds.
-            </Property>
-            <Property name="cutoff_policy" type="string">
-                The policy used to determine how dissimilar adjacent embedding windows must
-                be to consider them to be from different segments (a boundary),
-                options: 'average', 'high', or 'low'.
-            </Property>
-            <Property name="smoothing_width" type="int">
-                The width of the window used by the smoothing method
-            </Property>
-            <Property name="window_compare_pool_method" type="string">
-                the method used to pool embeddings within windows (of size k) for comparison
-                to adjacent windows, options: 'mean', 'max'.
-            </Property>
-            <Property name="embedding_aggregation_pool_method" type="string">
-                the method used to pool embeddings within a segment to create a single
-                embedding for the segment, options: 'mean', 'max'.
-            </Property>
-            <Property name="device" type="string">
-                The compute device to use when clipping, options: 'auto', 'cpu', 'cuda'.
-            </Property>
-        </Properties>
-    </Col>
-
-    <Col sticky>
-        ```python
-        from clipsai import clip, transcribe, Clip
-
-        transcripiton = transcribe("video.mp4")
-        clips: List[Clip] = clip(
-            transcripiton=transcripiton,
-            min_clip_time=15,
-            max_clip_time=900,
-            device="auto"
-        )
-        ```
-    </Col>
-</Row>
-

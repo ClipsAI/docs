@@ -41,7 +41,7 @@ pip install whisperx@git+https://github.com/m-bain/whisperx.git
 
 ## Creating clips
 
-Since clips are found using the video's transcript, the video must first be transcribed. Transcribing is done with [WhisperX](https://github.com/m-bain/whisperX), an open-source wrapper on [Whisper](https://github.com/openai/whisper) with additional functionality for detecting start and stop times for each word.
+Since clips are found using the video's transcript, the video must first be transcribed. Transcribing is done with [WhisperX](https://github.com/m-bain/whisperX), an open-source wrapper on [Whisper](https://github.com/openai/whisper) with additional functionality for detecting start and stop times for each word. For trimming the original video into a chosen clip, refer to the clipping reference.
 
 ```python
 from clipsai import ClipFinder, Transcriber
@@ -64,7 +64,7 @@ print("EndTime: ", clips[0].end_time)
 
 ## Resizing a video
 
-A hugging face access token is required to resize a video since [Pyannote](https://github.com/pyannote/pyannote-audio) is utilized for speaker diarization. You won't be charged for using Pyannote and instructions are on the [Pyannote HuggingFace ](https://huggingface.co/pyannote/speaker-diarization-3.0#requirements) page.
+A hugging face access token is required to resize a video since [Pyannote](https://github.com/pyannote/pyannote-audio) is utilized for speaker diarization. You won't be charged for using Pyannote and instructions are on the [Pyannote HuggingFace ](https://huggingface.co/pyannote/speaker-diarization-3.0#requirements) page. For resizing the original video to the desired aspect ratio, refer to the resizing reference.
 
 
 ```python
