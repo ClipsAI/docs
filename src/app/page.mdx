@@ -11,9 +11,7 @@ export const metadata = {
 
 # Clips AI Documentation
 
-Clips AI is an open-source Python library that automatically converts long videos into
-clips. With just a few lines of code, you can segment a video into multiple clips and
-resize its aspect ratio from 16:9 to 9:16. {{ className: 'lead' }}
+Clips AI is an open-source Python library that automatically converts longform video into clips. With just a few lines of code, you can segment a video into multiple clips and resize its aspect ratio from 16:9 to 9:16. {{ className: 'lead' }}
 
 <div className="not-prose mb-16 mt-6 flex gap-3">
 	<Button href="https://github.com/ClipsAI/clipsai" target="_blank" arrow="right">
@@ -26,10 +24,7 @@ resize its aspect ratio from 16:9 to 9:16. {{ className: 'lead' }}
 # Quickstart
 
 <Note>
-    Clips AI is designed for audio-centric, narrative-based videos such as podcasts,
-    interviews, speeches, and sermons. It actively employs video transcripts to identify
-    and create clips. Our resizing algorithm dynamically reframes and focuses on the
-    current speaker, converting the video into various aspect ratios.
+    Clips AI is designed for audio-centric, narrative-based videos such as podcasts, interviews, speeches, and sermons. Our clipping algorithm analyzes a video's transcript to identify and create clips. Our resizing algorithm dynamically reframes videos to focuse on the current speaker, converting the video into various aspect ratios.
 </Note>
 
 ## Installation
@@ -46,16 +41,16 @@ pip install whisperx@git+https://github.com/m-bain/whisperx.git
 
 ## Creating clips
 
-Clips are created based on the transcript of a video. You'll first need to transcribe
-the video, and then you can create clips based on the transcript.
-[WhisperX](https://github.com/m-bain/whisperX) is utilized under the hood to transcribe
-videos.
+Since clips are found using the video's transcript, the video must first be transcribed. Transcribing is done with [WhisperX](https://github.com/m-bain/whisperX), an open-source wrapper on [Whisper](https://github.com/openai/whisper) with additional functionality for detecting start and stop times for each word.
 
 ```python
-from clipsai import clip, transcribe
+from clipsai import ClipFinder, Transcriber
 
-transcripiton = transcribe("video.mp4")
-clips = clip(transcripiton)
+transcriber = Transcriber()
+transcription = transcriber.transcribe(audio_file_path="/abs/path/to/video.mp4")
+
+clipfinder = ClipFinder()
+clips = clipfinder.find_clips(transcription=transcription)
 
 print("StartTime: ", clips[0].start_time)
 print("EndTime: ", clips[0].end_time)
@@ -69,17 +64,14 @@ print("EndTime: ", clips[0].end_time)
 
 ## Resizing a video
 
-You'll need to create an access token on hugging face to resize a video because 
-[Pyannote](https://github.com/pyannote/pyannote-audio) is utilized for speaker 
-diarization. You won't be charged for using Pyannote and instructions are on the
-[Pyannote HuggingFace ](https://huggingface.co/pyannote/speaker-diarization-3.0) page.
+A hugging face access token is required to resize a video since [Pyannote](https://github.com/pyannote/pyannote-audio) is utilized for speaker diarization. You won't be charged for using Pyannote and instructions are on the [Pyannote HuggingFace ](https://huggingface.co/pyannote/speaker-diarization-3.0#requirements) page.
 
 
 ```python
 from clipsai import resize
 
 crops = resize(
-    video_file_path="video.mp4",
+    video_file_path="/abs/path/to/video.mp4",
     pyannote_auth_token="pyannote_token",
     aspect_ratio=(9, 16)
 )

@@ -5,14 +5,106 @@ export const metadata = {
 
 # Transcribe
 
-The transcribe function utilizes [WhisperX](https://github.com/m-bain/whisperX) to
-convert audio from media files into text transcripts. This transcription includes
-identifying the language of the audio, if not specified, and transcribing the content to
-produce a detailed Transcription object. This object contains comprehensive
-transcription information, including word-level and character-level timestamps, making
-it a prerequisite for clipping. {{ className: 'lead' }}
+The transcribing feature utilizes [WhisperX](https://github.com/m-bain/whisperX) (an open-source wrapper on [Whisper](https://github.com/openai/whisper) with additional functionality for detecting start and stop times for each word) to transcribe audio or video. Transcribing the content produces a Transcription object with comprehensive transcription information including the word-level, character-level, and sentence-level timestamps. Transcribing content is a prerequisite for clipping content.{{ className: 'lead' }}
 
-## Transcripiton Class
+&nbsp;
+
+```python {{ title: 'Request' }}
+    from clipsai import Transcriber
+
+    transcriber = Transcriber()
+    transcription: Transcription = transcriber.transcribe(
+        audio_file_path="/abs/path/to/video.mp4"
+    )
+```
+[**Source Code**](https://github.com/ClipsAI/clipsai/tree/main/clipsai/transcribe)
+
+---
+
+## Transcriber Class 
+A class for transcribing audio or video using WhisperX.
+
+### Attributes
+
+<Properties>
+    <Property name="model_size" type="string">
+        One of the [model sizes](https://huggingface.co/openai/whisper-large#model-details) implemented by whisper/whisperx.
+    </Property>
+    <Property name="device" type="string: cpu | cuda">
+        PyTorch device to perform computations on. Default is None (auto detects the correct device).
+    </Property>
+    <Property name="precision" type="string: float16 | int8">
+       Precision to perform prediction with.
+    </Property>
+</Properties>
+
+### Methods
+
+<Properties>
+    <Property name="transcribe" type="Transcription">
+        Transcribes an audio or video file.
+    </Property>
+</Properties>
+
+<Parameters>
+    <Parameter
+        name="audio_file_path"
+        type="string"
+    >
+        Absolute path to the audio or video file to transcribe.
+    </Parameter>
+
+
+    <Parameter
+        name="iso6391_lang_code"
+        type="string = None"
+    >
+        ISO 639-1 language code to transcribe the media in. Default is None, which autodetects the media's language.
+    </Parameter>
+
+    <Parameter
+        name="batch_size"
+        type="int = 16"
+    >
+        [whisperx batch size](https://github.com/m-bain/whisperX?tab=readme-ov-file#python-usage--). Reduce if low on GPU memory.
+    </Parameter>
+</Parameters>
+
+
+<Properties>
+    <Property name="detect_language" type="string">
+        Detects the language of an audio or video file.
+    </Property>
+</Properties>
+
+<Parameters>
+    <Parameter
+        name="audio_file_path"
+        type="string"
+    >
+        Absolute path to the audio or video file to transcribe.
+    </Parameter>
+
+
+    <Parameter
+        name="iso6391_lang_code"
+        type="string = None"
+    >
+        ISO 639-1 language code to transcribe the media in. Default is None, which autodetects the media's language.
+    </Parameter>
+
+    <Parameter
+        name="batch_size"
+        type="int = 16"
+    >
+        [whisperx batch size](https://github.com/m-bain/whisperX?tab=readme-ov-file#python-usage--). Reduce if low on GPU memory.
+    </Parameter>
+</Parameters>
+
+
+---
+
+## Transcription Class
 
 The Transcription class offers a detailed breakdown of audio or video transcriptions.
 It enables thorough analysis by providing structured access to the content at multiple
@@ -22,19 +114,19 @@ levels - from individual characters and words to full sentences.
 
 <Properties>
     <Property name="characters" type="list[Character]">
-        A list of characters from the text, represented as Character objects.
+        A list of characters from the text as Character objects and ordered by start time.
     </Property>
     <Property name="words" type="list[Word]">
-        A list of words from the text, represented as Word objects.
+        A list of words from the text as Word objects and ordered by start time.
     </Property>
     <Property name="sentences" type="list[Sentence]">
-        A list of sentences from the text, represented as Sentence objects.
+       A list of sentences from the text as Sentence objects and ordered by start time.
     </Property>
     <Property name="text" type="string">
         The full textual content of the transcription.
     </Property>
     <Property name="language" type="string">
-        The language of the transcription.
+        The ISO 639-1 language code of the transcription's language.
     </Property>
     <Property name="created_time" type="datetime">
         The time when the transcription was created.
@@ -46,35 +138,66 @@ levels - from individual characters and words to full sentences.
         The end time of the transcript in seconds.
     </Property>
     <Property name="source_software" type="string">
-        The software used for transcribing the audio.
+        The software used for transcribing.
     </Property>
 </Properties>
 
-### Properties
+### Methods
 
 <Properties>
     <Property 
-        name="find_char_index(target_time: float, type_of_time: str)"
+        name="find_word_index"
         type="int"
     >
         Finds the index in the transcript's character info who's start or end time is
         closest to 'target_time' (seconds).
     </Property>
-    <Property 
-        name="find_word_index(target_time: float, type_of_time: str)"
-        type="string"
+</Properties>
+
+<Parameters>
+    <Parameter
+        name="target_time"
+        type="float"
     >
-        Finds the index in the transcript's word info who's start or end time is closest
-        to 'target_time' (seconds)
-    </Property>
+        The time in seconds to search for.
+    </Parameter>
+
+
+    <Parameter
+        name="type_of_time"
+        type="string: start | end"
+    >
+        - start: returns the index of the word with the closest start time before target_time.
+        - end: returns the index of the word with the closest end time after target time.
+    </Parameter>
+</Parameters>
+
+<Properties>
     <Property 
-        name="find_sentence_index(target_time: float, type_of_time: str)"
-        type="list[Character]"
+        name="find_sentence_index"
+        type="int"
     >
         Finds the index in the transcript's sentence info who's start or end time is
         closest to 'target_time' (seconds).
     </Property>
 </Properties>
+
+<Parameters>
+    <Parameter
+        name="target_time"
+        type="float"
+    >
+        The time in seconds to search for.
+    </Parameter>
+
+    <Parameter
+        name="type_of_time"
+        type="string: start | end"
+    >
+        - start: returns the index of the sentence with the closest start time before target_time.
+        - end: returns the index of the sentence with the closest end time after target time.
+    </Parameter>
+</Parameters>
 
 ---
 
@@ -92,13 +215,25 @@ Represents a sentence in a transcription.
         The end time of the sentence in seconds.
     </Property>
     <Property name="start_char" type="int">
-        The start character in the transcription of the sentence.
+        The index of the sentence's start character in the full text.
     </Property>
     <Property name="end_char" type="int">
-        The end character in the transcription of the sentence.
+        The index of the sentence's end character in the full text.
     </Property>
     <Property name="text" type="string">
         The text of the word.
+    </Property>
+</Properties>
+
+### Methods
+
+<Properties>
+    <Property 
+        name="to_dict()"
+        type="dict"
+    >
+        Returns the properties of the sentence as a dictionary.
+
     </Property>
 </Properties>
 
@@ -118,13 +253,25 @@ Represents a word in a transcription.
         The end time of the word in seconds.
     </Property>
     <Property name="start_char" type="int">
-        The start character in the transcription of the word.
+        The index of the word's start character in the full text.
     </Property>
     <Property name="end_char" type="int">
-        The end character in the transcription of the word.
+        The index of the word's end character in the full text.
     </Property>
     <Property name="text" type="string">
         The text of the word.
+    </Property>
+</Properties>
+
+### Methods
+
+<Properties>
+    <Property 
+        name="to_dict()"
+        type="dict"
+    >
+        Returns the properties of the word as a dictionary.
+
     </Property>
 </Properties>
 
@@ -153,57 +300,3 @@ Represents a character in a transcription.
         The text of the character.
     </Property>
 </Properties>
-
----
-
-## Transcribe Function
-
-<Row>
-  <Col>
-
-    Takes in a file in the form of mp3 or mp4 and transcribes it using WhisperX.
-
-    ### Required attributes
-
-    <Properties>
-        <Property name="media_file_path" type="string">
-            The path to the media mp3 or mp4 file to transcribe.
-        </Property>
-    </Properties>
-
-    ### Optional attributes
-
-    <Properties>
-        <Property name="language_code" type="string">
-            The ISO 639-1 language code of the media file. Default is "auto".
-        </Property>
-        <Property name="whisper_model_size" type="string">
-            The size of the whisper model to use,
-            options: tiny, base, small, medium, large, large-v1, large-v2, large-v3
-        </Property>
-        <Property name="precision" type="string">
-            Precision to perform prediction with,
-            options: float16, int8
-        </Property>
-        <Property name="device" type="string">
-            The device to use when transcribing,
-            options: auto, cpu, cuda
-        </Property>
-    </Properties>
-
-  </Col>
-
-  <Col sticky>
-    ```python {{ title: 'Request' }}
-    from clipsai import transcribe, Transcripiton
-
-    transcript: Transcripiton = transcribe(
-        media_file_path="video.mp4",
-        language_code="auto",
-        device="auto"
-    )
-    ```
-  </Col>
-</Row>
-
-

@@ -5,25 +5,11 @@ export const metadata = {
 
 # Resize
 
-The resizing feature utilizes
-[Pyannote](https://huggingface.co/pyannote/speaker-diarization-3.0) for speaker
-diarization and segmenting videos based on different speakers. Scene changes are
-detected using [PySceneDetect](https://www.scenedetect.com/docs/0.6.2/), which
-identifies transitions within the video. For face detection and landmark identification
-to focus on speakers' faces, the library utilizes
-[MTCNN](https://github.com/timesler/facenet-pytorch) and
-[MediaPipe](https://github.com/google/mediapipe). A K-Means algorithm clusters similar
-bounding boxes, ensuring consistent speaker focus across frames. This process
-dynamically reframes and resizes videos, optimizing for various aspect ratios while
-maintaining speaker-centric visual focus. For a detailed explanation, read
-[here](https://drive.google.com/file/d/1rWbPP8E9KUhxASY_LGuMBmZDvUrQpHCV/view?usp=drive_link).{{ className: 'lead' }}
+The resizing feature utilizes [Pyannote](https://huggingface.co/pyannote/speaker-diarization-3.0) for speaker diarization. Scene changes are detected using [PySceneDetect](https://www.scenedetect.com/docs/0.6.2/). [MTCNN](https://github.com/timesler/facenet-pytorch) is used for face detection and [MediaPipe](https://github.com/google/mediapipe) for face landmark detection. These libraries are leveraged to dynamically resize a videos to focus on whoever is speaking at any given moment. For a detailed explanation, read [here](https://drive.google.com/file/d/1rWbPP8E9KUhxASY_LGuMBmZDvUrQpHCV/view?usp=drive_link).{{ className: 'lead' }}
 
 ## Crops Class
 
-Represents the crop and resize information of a video, including original dimensions,
-crop dimensions, and segments of the video that were cropped. Segments provide the x and
-y position of the video to start and crop from, as well as the speakers present in the
-segment, and the start and end time of the segment.
+Represents the crop and resize information of a video including the original dimensions, the crop dimensions, and the segments of the video that were cropped. Segments provide the x-y coordinates the video should be cropped to, the speakers present in the segment, and the start/end time of the segment.
 
 ### Properties
 

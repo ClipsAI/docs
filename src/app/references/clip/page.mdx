@@ -5,19 +5,7 @@ export const metadata = {
 
 # Clip
 
-The clipping functionality leverages the
-[TextTiling algorithm](https://dl.acm.org/doi/10.5555/972684.972687), which segments
-long-form audio content into coherent clips. This approach, first conceptualized by
-[Marti A. Hearst](https://scholar.google.com/citations?user=664NOb0AAAAJ&hl=en) in the
-1990s, detects shifts in subtopics within the audio by analyzing word usage and
-distribution patterns. The algorithm begins by tokenizing the text into pseudo sentences
-and computing lexical scores to measure the similarity between adjacent text blocks.
-Boundaries are identified by calculating depth scores, which represent significant
-changes in the lexical score, indicating a transition to a different subtopic. The
-entire process focuses on detecting topic shifts rather than topics themselves, making
-it particularly effective in identifying distinct sections within a narrative. This
-methodology is instrumental in creating clips of varying lengths optimized for short
-and extended audio content segments. {{ className: 'lead' }}
+The clipping feature leverages the [TextTiling algorithm](https://dl.acm.org/doi/10.5555/972684.972687), which segments long-form audio content into coherent clips. This approach, first conceptualized by [Marti A. Hearst](https://scholar.google.com/citations?user=664NOb0AAAAJ&hl=en) in the 1990s, detects shifts in the topics of a piece of content by analyzing the word usage and distribution patterns of the transcript. The algorithm begins by tokenizing the text into pseudo sentences and computing lexical scores to measure the similarity between adjacent text blocks. Boundaries are identified by calculating depth scores, which represent significant changes in the lexical score, indicating a transition to a different subtopic. The entire process focuses on detecting topic shifts rather than topics themselves, making it particularly effective in identifying distinct sections within a narrative. This methodology is instrumental in creating clips of varying lengths optimized for short and extended audio content segments. {{ className: 'lead' }}
 
 ## Clip Class
 
@@ -53,13 +41,13 @@ Represents a clip of a video or audio file.
 
 ---
 
-## Clip Funtion
+## Clip Function
 
 <Row>
     <Col>
 
         Takes in the transcript of an mp4 or mp3 file and finds engaging audio or video
-        clips based on the passed in transcript.
+        clips based on the input transcript.
 
         ### Required parameters
 
