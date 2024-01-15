@@ -242,7 +242,6 @@ export const navigation: Array<NavGroup> = [
         title: 'Introduction',
         links: [
             { title: 'Quickstart', href: '/' },
-            // { title: 'Errors', href: '/errors' },
         ],
     },
     {
@@ -262,9 +261,6 @@ export function Navigation(props: React.ComponentPropsWithoutRef<'nav'>) {
                 <TopLevelNavItem href="/references/clip">
                     References
                 </TopLevelNavItem>
-                {/* <TopLevelNavItem href="#">
-                    Documentation
-                </TopLevelNavItem> */}
                 {navigation.map((group, groupIndex) => (
                     <NavigationGroup
                         key={group.title}
