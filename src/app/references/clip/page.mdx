@@ -7,7 +7,7 @@ export const metadata = {
 
 
 
-The clipping feature leverages the [TextTiling algorithm](https://dl.acm.org/doi/10.5555/972684.972687) to segment long-form audio content into coherent clips using the transcript. This approach, first conceptualized by [Marti A. Hearst](https://scholar.google.com/citations?user=664NOb0AAAAJ&hl=en) in the 1990s, detects shifts in the topics of a piece of content by analyzing word usage and distribution patterns. Thanks to recent advances in NLP, [Texttiling with BERT Embeddings](https://arxiv.org/abs/2106.12978) provides significant improvements over Texttiling's original formulation and can be readily applied to SOA transcriptions using [Whisper](https://github.com/openai/whisper). The algorithm segments the text at the granularity of sentences with the entire process focusing on detecting topic shifts rather than topics themselves. This is particularly effective in identifying distinct sections within a narrative and, consequently, clips of varying lengths optimized for short and extended audio content segments. {{ className: 'lead' }}
+The clipping feature leverages the [TextTiling algorithm](https://dl.acm.org/doi/10.5555/972684.972687) to segment long-form audio content into coherent clips using the transcript. This approach, first conceptualized by [Marti A. Hearst](https://scholar.google.com/citations?user=664NOb0AAAAJ&hl=en) in the 1990s, detects shifts in the topics of a piece of content by analyzing word usage and distribution patterns. Thanks to recent advances in NLP, [Texttiling with BERT Embeddings](https://arxiv.org/abs/2106.12978) provides significant improvements over Texttiling's original formulation and can be readily applied to SoA transcriptions using [Whisper](https://github.com/openai/whisper). The algorithm segments the text at the granularity of sentences with the entire process focusing on detecting topic shifts rather than topics themselves. This is particularly effective in identifying distinct sections within a narrative and, consequently, clips of varying lengths optimized for short and extended audio content segments. {{ className: 'lead' }}
 
 ---
 
@@ -28,7 +28,7 @@ print("StartTime: ", clips[0].start_time)
 print("EndTime: ", clips[0].end_time)
 ```
 
-To actually trim the video using the returned **clips**, you'll first need to install [ffmpeg](https://ffmpeg.org/) and possibly [libmagic](https://man7.org/linux/man-pages/man3/libmagic.3.html) as well. Note that these are command line libraries, *not* python libraries. Once done, simply run the following code.
+To trim the video using the returned **clips**, you'll first need to [install ffmpeg](https://ffmpeg.org/download.html) ([Windows](https://www.gyan.dev/ffmpeg/builds/) | [MacOS](https://formulae.brew.sh/formula/ffmpeg)). Note that this is command line tool, *not* a python library. Once done, simply run the following code.
 
 ```python
 media_editor = clipsai.MediaEditor()
