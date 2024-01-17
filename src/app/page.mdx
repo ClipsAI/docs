@@ -32,15 +32,18 @@ Clips AI is an open-source Python library that automatically converts longform v
 
 ## Installation
 
-```bash {{ language: 'python' }}
-pip install clipsai
-```
+1. Install Python dependencies. <br></br> *We highly suggest using a virtual environment (such as [venv](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#create-and-use-virtual-environments)) to avoid dependency conflicts*
+    ```bash {{ language: 'python' }}
+    pip install clipsai
+    ```
 
-```bash {{ language: 'python' }}
-pip install whisperx@git+https://github.com/m-bain/whisperx.git
-```
+    ```bash {{ language: 'python' }}
+    pip install whisperx@git+https://github.com/m-bain/whisperx.git
+    ```
 
-Install [libmagic](https://man7.org/linux/man-pages/man3/libmagic.3.html): [Debian/Ubuntu](https://github.com/ahupp/python-magic?tab=readme-ov-file#debianubuntu) | [Windows](https://github.com/ahupp/python-magic?tab=readme-ov-file#windows) | [MacOS](https://github.com/ahupp/python-magic?tab=readme-ov-file#osx)
+2. Install [libmagic](https://github.com/ahupp/python-magic?tab=readme-ov-file#debianubuntu)
+
+3. Install [ffmpeg](https://github.com/kkroening/ffmpeg-python/tree/master?tab=readme-ov-file#installing-ffmpeg)
 
 
 ## Creating clips
@@ -69,7 +72,6 @@ print("EndTime: ", clips[0].end_time)
 ## Resizing a video
 
 A hugging face access token is required to resize a video since [Pyannote](https://github.com/pyannote/pyannote-audio) is utilized for speaker diarization. You won't be charged for using Pyannote and instructions are on the [Pyannote HuggingFace ](https://huggingface.co/pyannote/speaker-diarization-3.0#requirements) page. For resizing the original video to the desired aspect ratio, refer to the resizing reference.
-
 
 ```python
 from clipsai import resize
